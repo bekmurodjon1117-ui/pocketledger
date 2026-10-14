@@ -1,0 +1,110 @@
+/* App.css — PocketLedger styles (plain CSS, no external library) */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+  background: #f3f4f6;
+  color: #1f2937;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.app { max-width: 820px; margin: 0 auto; padding: 0 16px 48px; }
+
+/* Header */
+.app-header {
+  background: #1e3a5f;
+  color: #fff;
+  padding: 20px 24px;
+  border-radius: 0 0 12px 12px;
+  margin-bottom: 24px;
+}
+.app-header h1 { font-size: 22px; margin-bottom: 8px; }
+.balance-bar { display: flex; gap: 12px; flex-wrap: wrap; font-size: 14px; }
+.sep { color: #94a3b8; }
+.income { color: #6ee7b7; }
+.expense { color: #fca5a5; }
+
+/* Error */
+.error-banner {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+/* Cards */
+.card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+.card h2 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+
+/* Form */
+.tx-form { display: flex; flex-wrap: wrap; gap: 8px; }
+.tx-form input,
+.tx-form select { flex: 1 1 140px; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
+.tx-form button {
+  padding: 8px 20px;
+  background: #1e3a5f;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.tx-form button:disabled { opacity: 0.6; cursor: not-allowed; }
+.tx-form button:hover:not(:disabled) { background: #2d5491; }
+
+/* List header */
+.list-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.list-header h2 { margin-bottom: 0; }
+.filter-select { padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; }
+
+/* Transaction list */
+.empty { color: #9ca3af; font-size: 14px; }
+.tx-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.tx-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid #f3f4f6;
+  border-radius: 6px;
+  background: #fafafa;
+  font-size: 13px;
+}
+.tx-date { color: #6b7280; min-width: 88px; }
+.tx-desc { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tx-cat {
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.tx-amount { min-width: 90px; text-align: right; font-variant-numeric: tabular-nums; }
+.tx-amount.income { color: #059669; }
+.tx-amount.expense { color: #dc2626; }
+.delete-btn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0 2px;
+}
+.delete-btn:hover { color: #dc2626; }
+
+/* Main layout */
+.app-main { display: flex; flex-direction: column; }
