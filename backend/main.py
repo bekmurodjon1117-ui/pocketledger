@@ -9,6 +9,7 @@ Features:
   F5: Category breakdown aggregation
   F8: SQLite persistent storage
   F9: Static Bearer token auth (loaded from .env)
+  F10: CSV export — GET /transactions/export-csv (closes #1)
 
 Run:
   pip install -r requirements.txt
@@ -16,6 +17,8 @@ Run:
   python3 -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
 """
 
+import csv
+import io
 import os
 import sqlite3
 import uuid
@@ -26,6 +29,7 @@ from typing import Optional
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Security, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, field_validator
 
@@ -180,6 +184,49 @@ def list_transactions(
         ).fetchall()
     conn.close()
     return [row_to_tx(r) for r in rows]
+
+
+@app.get("/transactions/export-csv")
+def export_transactions_csv(
+    category: Optional[str] = None,
+    _: None = Depends(verify_token),
+) -> StreamingResponse:
+    """F10 — Export transactions as CSV. Closes #1.
+
+    Query params:
+        category (optional) — filter rows by category before export.
+
+    Response:
+        Content-Type: text/csv
+        Columns: id, date, description, category, amount
+        Rows ordered newest-first.
+    """
+    conn = get_db()
+    if category:
+        rows = conn.execute(
+            "SELECT id, date, description, category, amount "
+            "FROM transactions WHERE category = ? ORDER BY date DESC, rowid DESC",
+            (category,),
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            "SELECT id, date, description, category, amount "
+            "FROM transactions ORDER BY date DESC, rowid DESC"
+        ).fetchall()
+    conn.close()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["id", "date", "description", "category", "amount"])
+    for row in rows:
+        writer.writerow([row["id"], row["date"], row["description"], row["category"], row["amount"]])
+
+    output.seek(0)
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=\"transactions.csv\""},
+    )
 
 
 @app.delete("/transactions/{tx_id}", status_code=204)
